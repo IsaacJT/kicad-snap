@@ -11,7 +11,7 @@ description: |
   Unofficial and not supported by the developers!
 website: https://github.com/IsaacJT/kicad-snap
 contact: mailto:isaac@is.having.coffee
-
+license: GPL-3.0 AND CC-BY-SA-4.0
 confinement: strict
 
 package-repositories:
