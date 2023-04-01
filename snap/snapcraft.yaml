@@ -1,0 +1,67 @@
+name: itrue-kicad
+base: core22
+summary: Unofficial Kicad snap
+adopt-info: kicad
+compression: lzo
+description: |
+  A Cross Platform and Open Source Electronics Design Automation Suite
+
+  ---
+
+  Unofficial and not supported by the developers!
+website: https://github.com/IsaacJT/kicad-snap
+contact: mailto:isaac@is.having.coffee
+
+confinement: strict
+
+package-repositories:
+  - ppa: kicad/kicad-7.0-releases
+    type: apt
+
+parts:
+  kicad:
+    plugin: nil
+    stage-packages:
+      - kicad
+      - kicad-footprints
+      - kicad-libraries
+      - kicad-symbols
+      - kicad-templates
+      - kicad-packages3d
+      - kicad-demos
+      - libdrm-common
+    override-build: |
+      craftctl default
+      craftctl set version="$(apt info kicad | grep Version: | cut -f 2- -d\ | cut -f 1 -d~)"
+      craftctl set grade="stable"
+    prime:
+      - -usr/share/man
+      - -usr/share/pkgconfig
+      - -usr/share/bug
+
+  desktop:
+    plugin: nil
+    after: 
+      - kicad
+    override-build: |
+      install -Dm0644 ${CRAFT_STAGE}/usr/share/applications/org.kicad.kicad.desktop \
+        ${CRAFT_PART_INSTALL}/meta/gui/itrue-kicad.desktop
+      install -Dm0644 ${CRAFT_STAGE}/usr/share/icons/hicolor/128x128/apps/kicad.png \
+        ${CRAFT_PART_INSTALL}/meta/gui/itrue-kicad.png
+
+      sed -i 's/Exec=kicad %f/Exec=itrue-kicad %f/' \
+        ${CRAFT_PART_INSTALL}/meta/gui/itrue-kicad.desktop
+      sed -i 's;Icon=kicad;Icon=${SNAP}/meta/gui/itrue-kicad.png;' \
+        ${CRAFT_PART_INSTALL}/meta/gui/itrue-kicad.desktop
+
+apps:
+  itrue-kicad:
+    command: usr/bin/kicad
+    extensions:
+      - gnome
+    
+layout:
+  /usr/share/kicad:
+    bind: $SNAP/usr/share/kicad
+  /usr/share/libdrm:
+    bind: $SNAP/usr/share/libdrm
