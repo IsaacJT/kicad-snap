@@ -59,6 +59,10 @@ apps:
     command: usr/bin/kicad
     extensions:
       - gnome
+    plugs:
+      - home
+      - network
+      - removable-media
     
 layout:
   /usr/share/kicad:
